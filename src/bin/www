@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+var app = require('../app')
+var port = process.env.PORT || '3000';
+/*
+ * Create server.
+ */
+
+app.listen(port, function () {
+	console.log('Example app is running on port 3000!')
+})
+ 

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>
+		<%=title%>
+	</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<% for(var i=0; i < externalJSFile.length; i++) { %>
+		<script type='text/javascript' charset="utf-8" src='<%= externalJSFile[i]%>'></script>
+		<% } %>
+			<% for(var i=0; i < externalCSSFile.length; i++) { %>
+				<link rel='stylesheet' href='<%= externalCSSFile[i]%>'>
+				<% } %>
+</head>
+
+<body class="container-fluid col-md-12">
+	<h1>
+		<%=message %>
+	</h1>
+	<div id="messagePopUpField" class="alert alert-success col-md-12" role="alert" style="display: none;">
+		<p id="messagePopUp" style="font-size: 1em;">....</p>
+	</div>
+	<section class="container col-md-12">
+		<div class="row">
+			<form id="createPayment" class="form" method="POST">
+				<secton class="col-md-5" id="order">
+					<div class="row col-md-12">
+						<h3> Order Field </h3>
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">Customer Name</span>
+								<input class="form-control" type="text" id="cn_order" value="" pattern="[A-Za-z].{1,}" placeholder="Customer Name" required>
+							</div>
+						</div>
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">Customer Phone Number</span>
+								<select id="cpn_order_countrycode" class="form-control"> 
+									<% for(var i=0; i < countryCode.length; i++) { %>
+									<option value="<%=countryCode[i]['dial_code']%>" >
+										<%=countryCode[i]['name']%>
+									</option>
+									<% } %>
+								</select>
+								<input class="form-control" type="number" id="cpn_order" aria-label="Customer Phone Number" placeholder="Customer Phone Number" required>
+							</div>
+						</div>
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">Currency</span>
+								<select id="curr_order" class="form-control"> 
+                    					<% for(var i=0; i < currency.length; i++) { %>
+                         				<option val="<%=currency[i]%>"><%=currency[i]%></option>
+										<% } %>
+                					</select>
+							</div>
+						</div>
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">Price</span>
+								<input class="form-control" type="number" id="price_order" aria-label="Order Price" placeholder="Order Price, only number allowed" step="0.01" min="0" required>
+							</div>
+						</div>
+					</div>
+				</secton>
+				<secton class="col-md-7" id="payment">
+					<div class="row col-md-12">
+						<h3> Payment Field </h3>
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">Credit Card Holder Name</span>
+								<input class="form-control" type="text" id="cchn_payment" value="" pattern="[A-Za-z].{1,}" placeholder="Credit Card Holder Name" required>
+							</div>
+						</div>
+					</div>
+					<div class="row col-md-12">
+						<div class="row col-md-12">
+							<div class="form-group">
+								<div class="input-group">
+									<span class="input-group-addon">Customer Credit Number</span>
+									<% for(var i=0; i < theCcnPaymentID.length; i++) { %>
+										<input class="form-control" type="number" id="<%=theCcnPaymentID[i]%>" value="" max="9999" min="0" placeholder="The <%=i+1%> item" required>
+										<% if (i !== 3){%>
+											<span class="input-group-addon">/</span>
+											<% }%>
+												<% } %>
+								</div>
+							</div>
+						</div>
+						<div class="row col-md-12">
+							<div class="form-group">
+								<div class="input-group">
+									<span class="input-group-addon">Credit Card Expiration (m/y)</span>
+									<input class="form-control" type="number" id="cce_payment_m" value="" max="12" min="1" placeholder="Month" required>
+									<span class="input-group-addon">/20</span>
+									<input class="form-control" type="number" id="cce_payment_y" value="" max="99" min="17" placeholder="Year" required>
+								</div>
+							</div>
+						</div>
+						<div class="row col-md-12">
+							<div class="form-group">
+								<div class="input-group">
+									<span class="input-group-addon">Credit Card CCV</span>
+									<input class="form-control" type="number" id="ccv_payment" value="" placeholder="Identify Number" required>
+								</div>
+							</div>
+						</div>
+					</div>
+				</secton>
+				<div class="row col-md-12"><input class=" btn btn-success btn-block" type="submit" value="Save"></div>
+			</form>
+		</div>
+	</section>
+	<section class="container col-md-12" id="paymentCheck">
+		<secton class="container col-md-8">
+			<div class="row">
+				<form id="checkingPayment" class="form" method="POST">
+					<div class="row col-md-12">
+						<h3> Payment Checking Field </h3>
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">Customer Name</span>
+								<input class="form-control" type="text" id="pc_cn" value="" pattern="[A-Za-z].{1,}" placeholder="Customer Name" required>
+							</div>
+						</div>
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">Payment Reference Code</span>
+								<input class="form-control" type="text" id="pc_prc" value="" pattern="[A-Za-z0-9].{1,}" placeholder="The Reference Code" required>
+							</div>
+						</div>
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group">
+							<input class="btn btn-info btn-block" type="submit" value="Check It">
+						</div>
+					</div>
+				</form>
+			</div>
+		</secton>
+		<secton id="MyPaymentForm" class="col-md-4" style="display: none;">
+			<div class="cold-md-12">
+				<div class="row">
+					<div class="row col-md-12">
+						<h3> My Payment </h3>
+					</div>
+					<div id="checkFormDisplay" class="row col-md-12">
+					</div>
+				</div>
+			</div>
+		</secton>
+	</section>
+	<script type="text/javascript">
+		alert("hi")
+		var formID = <%-formID%>;
+		var checkFormID = <%-checkFormID%>;
+		var checkformDisplayID = <%-checkformDisplayID%>;
+		$(document).ready(function() {
+			for (var i in checkformDisplayID) {
+				$('#checkFormDisplay').append('<p id="' + checkformDisplayID[i] + '" ></p>')
+			}
+			$('#cpn_order_countrycode').val('');
+			$('#createPayment').submit(function(e) {
+				e.preventDefault();
+				if (($('#cce_payment_y').val() < 18) || ($('#cce_payment_y').val() === 18 && $('#cce_payment_m').val() < (new Date()).getMonth()) || $('#cpn_order_countrycode').val() === '' || $('#ccnPayment1').val().length !== 4 || $('#ccnPayment2').val().length !== 4 || $('#ccnPayment3').val().length !== 4 || $('#ccnPayment4').val().length !== 4) {
+					$('#messagePopUp').css('color', 'red').html('Wrong Input Information.');
+					$("#messagePopUpField").show().delay(3000).fadeOut();
+					return;
+				}
+				var d = {
+					cn: $('#cn_order').val(),
+					cpn: $("select[id='cpn_order_countrycode']").val() + '-' + $('#cpn_order').val(),
+					curr: $('#curr_order').val(),
+					price: $('#price_order').val(),
+					cchn: $('#cchn_payment').val(),
+					ccn: $('#ccnPayment1').val() + $('#ccnPayment2').val() + $('#ccnPayment3').val() + $('#ccnPayment4').val(),
+					cce: $('#cce_payment_m').val() + '/' + $('#cce_payment_y').val(),
+					ccv: $('#ccv_payment').val()
+				};
+				$.ajax({
+					url: '/payment/make',
+					method: "POST",
+					data: d,
+					success: (data) => {
+						var msg;
+						$('#messagePopUp').css('color', data.msgColor);
+						if (typeof data.referenceCode === 'undefined') {
+							msg = data.msg;
+						} else {
+							msg = data.msg + ' Your Payment Reference Code is ' + data.referenceCode + ', the expiration time is ' + (data.referenceCodeExpirationTime / 60) + ' minutes.';
+							//window.open('/getfile?file=' + data.recordFile);
+						}
+						$("#messagePopUp").html(msg)
+						$("#messagePopUpField").show();
+						for (var i in formID) {
+							$(formID[i]).val('');
+						}
+					},
+					error: () => {
+						$("#messagePopUp").html('Server Connection Error')
+						$("#messagePopUpField").show().delay(6000).fadeOut();
+					}
+				});
+			});
+			$('#checkingPayment').submit(function(e) {
+				e.preventDefault();
+				var d = {
+					pc_cn: $('#pc_cn').val(),
+					pc_prc: $('#pc_prc').val()
+				};
+				$.ajax({
+					url: '/payment/check',
+					method: "POST",
+					data: d,
+					success: (data) => {
+						var msg = data.msg;;
+						$('#messagePopUp').css('color', data.msgColor);
+						if (typeof data.data !== 'undefined') {
+							$("#MyPaymentForm").show();
+							$("#thePayment_ref").html('My Reference code :' + $('#pc_prc').val());
+							$("#thePayment_cn").html('Customer Name :' + data.data['cn']);
+							$("#thePayment_cpn").html('Customer Phone Number :' + data.data['cpn']);
+							$("#thePayment_curr").html('The Currency :' + data.data['curr']);
+							$("#thePayment_price").html('The Price :' + data.data['price']);
+						} else {
+							for (var i in checkformDisplayID) {
+								$('#' + checkformDisplayID[i]).val('');
+							}
+						}
+						$("#messagePopUp").html(msg)
+						$("#messagePopUpField").show().delay(6000).fadeOut()
+						for (var i in checkFormID) {
+							$(checkFormID[i]).val('');
+						}
+					},
+					error: () => {
+						$("#messagePopUp").html('Server Connection Error')
+						$("#messagePopUpField").show().delay(6000).fadeOut();
+					}
+				});
+			});
+		})
+
+	</script>
+</body>
+
+</html>
